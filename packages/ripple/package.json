@@ -16,7 +16,7 @@
   "dependencies": {
     "@material/mwc-base": "^0.1.2",
     "@material/ripple": "^0.38.1",
-    "@polymer/lit-element": "^0.6.0-dev.5"
+    "@polymer/lit-element": "^0.6.0-dev.6"
   },
   "publishConfig": {
     "access": "public"

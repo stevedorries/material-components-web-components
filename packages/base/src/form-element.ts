@@ -14,17 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement} from '@polymer/lit-element/lit-element.js';
+import {LitElement} from '@polymer/lit-element';
 
 export class FormElement extends LitElement {
   protected _formElement: HTMLInputElement | null = null;
 
-  static get formElementSelector() {
+  static get formElementSelector():string {
     return 'input';
   }
-
-  _root: HTMLElement | null = null;
-
+  
   createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
@@ -39,7 +37,7 @@ export class FormElement extends LitElement {
     }
   }
 
-  setAriaLabel(value) {
+  setAriaLabel(value:string) {
     if (this._formElement) {
       this._formElement.setAttribute('aria-label', value);
     }

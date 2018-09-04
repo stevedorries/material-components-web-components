@@ -14,10 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement} from './component-element.js';
-export {MDCWebComponentMixin, html} from './component-element.js';
+import {ComponentElement} from './component-element';
+export {MDCWebComponentMixin} from './component-element';
 
-export class FormableComponentElement extends ComponentElement {
+export abstract class FormableComponentElement extends ComponentElement {
+  protected _formElement: HTMLInputElement | null = null;
+
   static get formElementSelector() {
     return 'input';
   }
@@ -27,9 +29,9 @@ export class FormableComponentElement extends ComponentElement {
     this._asyncComponent = true;
   }
 
-  firstRendered() {
+  async firstRendered() {
     super.firstRendered();
-    this._formElement = this.shadowRoot.querySelector(this.constructor.formElementSelector);
+    this._formElement = this.shadowRoot!.querySelector<HTMLInputElement>((this.constructor as typeof FormableComponentElement).formElementSelector);
   }
 
   click() {

@@ -14,17 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-import {afterNextRender} from './utils.js';
-export {html} from '@polymer/lit-element/lit-element.js';
-export {MDCWebComponentMixin} from './mdc-web-component.js';
+import {LitElement} from '@polymer/lit-element';
+import {afterNextRender} from './utils';
+export {MDCWebComponentMixin} from './mdc-web-component';
 
-export class ComponentElement extends LitElement {
-  static get ComponentClass() {
+export abstract class ComponentElement extends LitElement {
+  _asyncComponent: boolean;
+  _componentRoot: Element | null = null;
+  _component: any;
+  _resolveComponentPromise?: (value?: {} | PromiseLike<{}> | undefined) => void;
+  _componentPromise?: Promise<{}>;
+  static get ComponentClass(): any {
     throw new Error('Must provide component class');
   }
 
-  static get componentSelector() {
+  static get componentSelector():string {
     throw new Error('Must provide component selector');
   }
 
@@ -34,7 +38,7 @@ export class ComponentElement extends LitElement {
   }
 
   async firstRendered() {
-    super.firstRendered();
+    super._firstRendered();
     if (this._asyncComponent) {
       await afterNextRender();
     }
@@ -42,8 +46,8 @@ export class ComponentElement extends LitElement {
   }
 
   _makeComponent() {
-    this._componentRoot = this.shadowRoot.querySelector(this.constructor.componentSelector);
-    this._component = new (this.constructor.ComponentClass)(this._componentRoot);
+    this._componentRoot = this.shadowRoot!.querySelector((this.constructor as typeof ComponentElement).componentSelector);
+    this._component = new ((this.constructor as typeof ComponentElement).ComponentClass)(this._componentRoot);
     if (this._resolveComponentPromise) {
       this._resolveComponentPromise(this._component);
     }
@@ -55,7 +59,7 @@ export class ComponentElement extends LitElement {
         this._resolveComponentPromise = resolve;
       });
       if (this._component) {
-        this._resolveComponentPromise(this._component);
+        this._resolveComponentPromise!(this._component);
       }
     }
     return this._componentPromise;

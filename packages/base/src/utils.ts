@@ -14,21 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-function isCustomElementCandidate(element) {
-  return element.localName.match('-');
+function isCustomElementCandidate(element: HTMLElement) {
+  return element.localName!.match('-');
 }
 
-export async function callWhenReady(element, method, args) {
-  if (!element[method] && isCustomElementCandidate(element) && !customElements.get(element.localName)) {
-    await customElements.whenDefined(element.localName);
+export async function callWhenReady(element:HTMLElement, method:string, ...args: any[]) {
+  if (!element[method] && isCustomElementCandidate(element) && !customElements.get(element.localName!)) {
+    await customElements.whenDefined(element.localName!);
   }
   if (element[method]) {
     element[method](...args);
   }
 }
 
-let afterRenderPromise;
-export function afterNextRender() {
+let afterRenderPromise: Promise<{}> | null;
+export function afterNextRender(): Promise<any> {
   if (!afterRenderPromise) {
     afterRenderPromise = new Promise((resolve) => {
       requestAnimationFrame(() => setTimeout(() => {
@@ -40,8 +40,8 @@ export function afterNextRender() {
   return afterRenderPromise;
 }
 
-export function findAssignedNode(slot, selector) {
-  return slot.assignedNodes({flatten: true}).find((n) => {
-    return (n.nodeType == Node.ELEMENT_NODE) && n.matches(selector);
+export function findAssignedNode(slot:HTMLSlotElement, selector:string):Element {
+  return <Element>slot.assignedNodes({flatten: true}).find((value:Node) => {
+    return (value instanceof Element) && value.matches(selector);
   });
 }

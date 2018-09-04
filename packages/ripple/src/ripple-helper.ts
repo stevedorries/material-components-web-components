@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement} from '@polymer/lit-element/lit-element.js';
-import {MDCRipple, MDCRippleFoundation} from '@material/ripple/index.js';
-import * as util from '@material/ripple/util.js';
+import {LitElement} from '@polymer/lit-element';
+import {MDCRipple, MDCRippleFoundation} from '@material/ripple';
+import * as util from '@material/ripple/util';
 
 const MATCHES = util.getMatchesProperty(HTMLElement.prototype);
 
@@ -24,7 +24,7 @@ const supportsCssVariables = util.supportsCssVariables(window);
 
 type Handler = EventListenerOrEventListenerObject;
 
-export function attachRipple(instance: LitElement & RippleCapableComponent, rippleSurface?: HTMLElement, interactionNode?: HTMLElement) {
+export function attachRipple(instance: RippleCapableComponent, rippleSurface?: HTMLElement | null, interactionNode?: HTMLElement | null) {
 
   const rootNode = instance._root;
 
@@ -44,7 +44,7 @@ export function attachRipple(instance: LitElement & RippleCapableComponent, ripp
     addClass: (className: string) => rippleSurface!.classList.add(className),
     removeClass: (className: string) =>
       rippleSurface!.classList.remove(className),
-    containsEventTarget: (target: HTMLElement) => rootNode.contains(target),
+    containsEventTarget: (target: HTMLElement) => rootNode!.contains(target),
     registerInteractionHandler: (type: string, handler: Handler) =>
       interactionNode!.addEventListener(type, handler, util.applyPassive()),
     deregisterInteractionHandler: (type: string, handler: Handler) =>
@@ -69,7 +69,7 @@ export function attachRipple(instance: LitElement & RippleCapableComponent, ripp
 }
 
 export interface RippleCapableComponent {
-  _root: HTMLElement;
+  _root?: HTMLElement | null;
   unbounded?: boolean;
   disabled?: boolean;
 }

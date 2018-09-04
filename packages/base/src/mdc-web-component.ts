@@ -49,7 +49,7 @@ export const MDCWebComponentMixin = (superClass) =>
     emit(evtType, evtData, shouldBubble = false) {
       let evt;
       if (hasCustomEventConstructor) {
-        evt = new CustomEvent(evtType, {
+        evt = new CustomEvent(evtType, <CustomEventInit<any>>{
           detail: evtData,
           bubbles: shouldBubble,
           composed: true,

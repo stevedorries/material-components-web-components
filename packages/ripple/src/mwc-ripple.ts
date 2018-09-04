@@ -16,10 +16,10 @@ limitations under the License.
 */
 import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
 import {MDCRipple} from '@material/ripple';
-import {attachRipple} from "./ripple-helper.js";
+import {attachRipple, RippleCapableComponent} from "./ripple-helper.js";
 import {style} from './mwc-ripple-css.js';
 
-export class Ripple extends LitElement {
+export class Ripple extends LitElement implements RippleCapableComponent {
   @property({type: Boolean})
   primary = false;
 

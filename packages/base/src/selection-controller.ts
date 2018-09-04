@@ -15,6 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 export class SelectionController {
+  protected _sets: {};
+  protected _property: string;
+  protected _keyIsDown: boolean = false;
+  protected _mouseIsDown: boolean = false;
+  protected _blurRaf: any;
+  protected _focusedSet: any;
+  protected _updating: boolean = false;
   static getController(element) {
     const root = element.getRootNode();
     if (!root.__selectionController) {
@@ -112,21 +119,21 @@ export class SelectionController {
     });
   }
 
-  getOrdered(element) {
+  getOrdered(element): Node[] {
     const set = this.getSet(element.name);
     if (!set._ordered) {
       set._ordered = [];
       for (const e of set) {
         set._ordered.push(e);
       }
-      set._ordered.sort((a, b) =>
+      set._ordered.sort((a:Node, b:Node) =>
         a.compareDocumentPosition(b) == Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0
       );
     }
     return set._ordered;
   }
 
-  getSet(name) {
+  getSet(name):any {    
     if (!this._sets[name]) {
       this._sets[name] = new Set();
     }

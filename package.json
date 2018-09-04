@@ -79,5 +79,8 @@
         ]
       }
     }
+  },
+  "dependencies": {
+    "@material/mwc-slider": "file:packages/slider"
   }
 }
