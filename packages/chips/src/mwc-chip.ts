@@ -14,18 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { ComponentElement } from '@material/mwc-base';
+
 import { style } from './mwc-chip-css.js';
 import { MDCChip } from '@material/chips';
 import '@material/mwc-icon/mwc-icon-font.js';
-import { html } from '@polymer/lit-element';
+import { LitElement, html } from '@polymer/lit-element';
 
-export class Chip extends ComponentElement {
+export class Chip extends LitElement {
   leadingIcon: string;
   trailingIcon: string;
   label: string;
   active: boolean;
   _boundInteractionHandler: any;
+  _componentRoot: HTMLElement | null = null;
+  _component: any;
   static get ComponentClass() {
     return MDCChip;
   }
@@ -58,7 +60,7 @@ export class Chip extends ComponentElement {
 
   // TODO(sorvell): Note, nice to have vars for activated colors.
   render() {
-    const { leadingIcon, trailingIcon, label, active} = this;
+    const { leadingIcon, trailingIcon, label, active } = this;
     const leadingIconPart = leadingIcon ?
       html`<i class="material-icons mdc-chip__icon mdc-chip__icon--leading">${leadingIcon}</i>` : '';
     const trailingIconPart = trailingIcon ?
@@ -72,7 +74,11 @@ export class Chip extends ComponentElement {
         ${trailingIconPart}
       </div>`;
   }
-
+  firstUpdated(){
+    //this._formElement = this.shadowRoot!.querySelector(FormElement.formElementSelector);
+    this._componentRoot = this.shadowRoot!.querySelector(Chip.componentSelector);
+    this._component = new (Chip.ComponentClass)(this._componentRoot);   
+  }
   // TODO(sorvell): Prefer being able to set a property for active rather than
   // having a method. This enables declarative setting.
   // toggleActive() {

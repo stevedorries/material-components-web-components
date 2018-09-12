@@ -14,13 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement, MDCWebComponentMixin} from '@material/mwc-base';
-import {html} from '@polymer/lit-element';
+
+import {LitElement, html} from '@polymer/lit-element';
 import {classString} from '@polymer/lit-element/lib/render-helpers';
 import {style} from './mwc-chip-set-css';
 import {MDCChipSet} from '@material/chips';
 
-export class ChipSet extends ComponentElement {
+export class ChipSet extends LitElement {
   _slot: HTMLSlotElement | null = null;
   type: string;
   static get ComponentClass() {
@@ -39,7 +39,7 @@ export class ChipSet extends ComponentElement {
 
   constructor() {
     super();
-    this._asyncComponent = true;
+    
     this.type = '';
   }
 
@@ -66,7 +66,7 @@ export class ChipSet extends ComponentElement {
 
   // TODO(sorvell): handle slotchange.
   get chips() {
-    return this._slot!.assignedNodes({flatten: true}).filter((e) => e.localName == 'mdc-chip');
+    return this._slot!.assignedNodes({flatten: true}).filter((e) => e.localName == 'mwc-chip');
   }
 }
 

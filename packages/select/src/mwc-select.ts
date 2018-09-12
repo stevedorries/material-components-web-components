@@ -14,13 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-import {MDCWebComponentMixin} from '@material/mwc-base/mdc-web-component.js';
-import {MDCWCMenu} from '@material/mwc-menu/mwc-menu.js';
+import {LitElement, html} from '@polymer/lit-element';
+import {MDCWebComponentMixin} from '@material/mwc-base/mdc-web-component';
+import {MDCWCMenu} from '@material/mwc-menu/mwc-menu';
 import {MDCSelect} from '@material/select';
-import {style} from './mwc-select-css.js';
-import {style as menuStyle} from '@material/mwc-menu/mwc-menu-css.js';
-import {afterNextRender} from '@material/mwc-base/utils.js';
+import {style} from './mwc-select-css';
+import {style as menuStyle} from '@material/mwc-menu/mwc-menu-css';
+import {afterNextRender} from '@material/mwc-base/utils';
 
 // this element depend on the `mwc-list-item` and `mwc-list-item-separator`
 // elements to be registered ahead of time
@@ -48,9 +48,17 @@ class MDCWSelect extends MDCWebComponentMixin(MDCSelect) {
   get selectedOptions() {
     return this.listItems.filter((e) => e.matches('[aria-selected]'));
   }
+  constructor(...args:any[]){
+    super();
+  }
 }
 
 export class Select extends LitElement {
+  label: string;
+  disabled: boolean;
+  box: boolean;
+  _mdcComponent: MDCWSelect | null=null;
+  options: any;
   static get properties() {
     return {
       label: {type: String},
@@ -99,37 +107,37 @@ export class Select extends LitElement {
   }
 
   _makeComponent() {
-    const root = this.shadowRoot.querySelector('.mdc-select');
+    const root = this.shadowRoot!.querySelector('.mdc-select');
     this._mdcComponent = new MDCWSelect(root);
   }
 
   get items() {
-    return this.shadowRoot.querySelector('slot').assignedNodes({flatten: true})
+    return this.shadowRoot!.querySelector('slot')!.assignedNodes({flatten: true})
       .filter((e) => e.localName == 'mwc-list-item');
   }
 
   get value() {
-    return this._mdcComponent.value;
+    return this._mdcComponent!.value;
   }
 
   get selectedOptions() {
-    this._makeComponent.selectedOptions;
+   return this._mdcComponent!.selectedOptions;
   }
 
   get selectedIndex() {
-    return this._mdcComponent.selectedIndex();
+    return this._mdcComponent!.selectedIndex();
   }
 
   set selectedIndex(selectedIndex) {
-    this._mdcComponent.setSelectedIndex(selectedIndex);
+    this._mdcComponent!.setSelectedIndex(selectedIndex);
   }
 
   item(index) {
-    return this._mdcComponent.item(index);
+    return this._mdcComponent!.item(index);
   }
 
   nameditem(key) {
-    this._mdcComponent.named;
+    this._mdcComponent!.named;
     // NOTE: IE11 precludes us from using Array.prototype.find
     for (let i = 0, options = this.options, option; (option = options[i]); i++) {
       if (option.id === key || option.getAttribute('name') === key) {

@@ -23,18 +23,18 @@ import { style } from './mwc-drawer-css.js';
 
 
 const kindToFoundation = {
-  temporary: MDCModalDrawerFoundation,
-  persistent: MDCDismissibleDrawerFoundation
+  modal: MDCModalDrawerFoundation,
+  dismissible: MDCDismissibleDrawerFoundation
 }
 
 function foundationForKind(kind: string): MDCDismissibleDrawerFoundation | MDCModalDrawerFoundation {
-  return kindToFoundation[kind] || kindToFoundation.temporary;
+  return kindToFoundation[kind] || kindToFoundation.modal;
 }
 
 export class Drawer extends LitElement {
 
   @property({ type: String })
-  kind: 'temporary';
+  kind: 'modal';
 
   @property({ type: Boolean })
   opened = false;
@@ -117,7 +117,7 @@ export class Drawer extends LitElement {
         notifyOpen: () => this.dispatchEvent(new Event(MDCDismissibleDrawerFoundation.strings.OPEN_EVENT)),
         notifyClose: () => this.dispatchEvent(new Event(MDCDismissibleDrawerFoundation.strings.CLOSE_EVENT)),
       };
-      if (this.kind === 'temporary') {
+      if (this.kind === 'modal') {
         Object.assign(adapter, {
           addBodyClass: (className) => document.body.classList.add(className),
           removeBodyClass: (className) => document.body.classList.remove(className),
