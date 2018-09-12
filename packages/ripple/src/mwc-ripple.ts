@@ -14,11 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
+import {LitElement, html, property, PropertyValues} from '@polymer/lit-element';
 import {MDCRipple} from '@material/ripple';
-import {attachRipple, RippleCapableComponent} from "./ripple-helper.js";
-import {style} from './mwc-ripple-css.js';
-
+import {attachRipple, RippleCapableComponent} from "./ripple-helper";
+import {style} from './mwc-ripple-css';
+export {attachRipple, RippleCapableComponent} from "./ripple-helper";
 export class Ripple extends LitElement implements RippleCapableComponent {
   @property({type: Boolean})
   primary = false;
@@ -51,8 +51,8 @@ export class Ripple extends LitElement implements RippleCapableComponent {
 
   update(changedProperties: PropertyValues) {
     super.update(changedProperties);
-    if (changedProperties.has('unbounded')) {
-      this._ripple.unbounded = this.unbounded;
+    if ( this._ripple && changedProperties.has('unbounded')) {      
+      this._ripple!.unbounded = this.unbounded;
     }
   }
 
@@ -65,11 +65,13 @@ export class Ripple extends LitElement implements RippleCapableComponent {
   }
 
   activate() {
-    this._ripple!.activate();
+    if(this._ripple)
+      this._ripple.activate();
   }
 
   deactivate() {
-    this._ripple!.deactivate();
+    if(this._ripple)
+      this._ripple.deactivate();
   }
 
   layout() {

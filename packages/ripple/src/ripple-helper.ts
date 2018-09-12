@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement} from '@polymer/lit-element';
-import {MDCRipple, MDCRippleFoundation} from '@material/ripple';
+
+import { MDCRipple, MDCRippleFoundation } from '@material/ripple';
 import * as util from '@material/ripple/util';
 
 const MATCHES = util.getMatchesProperty(HTMLElement.prototype);
@@ -51,10 +51,10 @@ export function attachRipple(instance: RippleCapableComponent, rippleSurface?: H
       interactionNode!.removeEventListener(type, handler, util.applyPassive()),
     registerDocumentInteractionHandler: (evtType: string, handler: Handler) =>
       document.documentElement.addEventListener(
-          evtType, handler, util.applyPassive()),
+        evtType, handler, util.applyPassive()),
     deregisterDocumentInteractionHandler: (evtType: string, handler: Handler) =>
       document.documentElement.removeEventListener(
-          evtType, handler, util.applyPassive()),
+        evtType, handler, util.applyPassive()),
     registerResizeHandler: (handler: Handler) =>
       window.addEventListener('resize', handler),
     deregisterResizeHandler: (handler: Handler) =>
@@ -62,7 +62,7 @@ export function attachRipple(instance: RippleCapableComponent, rippleSurface?: H
     updateCssVariable: (varName: string, value: string) =>
       rippleSurface!.style.setProperty(varName, value),
     computeBoundingRect: () => rippleSurface!.getBoundingClientRect(),
-    getWindowPageOffset: () => ({x: window.pageXOffset, y: window.pageYOffset}),
+    getWindowPageOffset: () => ({ x: window.pageXOffset, y: window.pageYOffset }),
   };
   const foundation = new MDCRippleFoundation(adapter);
   return new MDCRipple(rootNode, foundation);

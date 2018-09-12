@@ -14,75 +14,82 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
-import {FormElement} from '@material/mwc-base/form-element.js';
-import MDCSwitchFoundation from '@material/switch/foundation.js';
-import {style} from './mwc-switch-css.js';
-import {attachRipple} from '@material/mwc-ripple/ripple-helper.js';
 
-export class Switch extends FormElement {
-  @property({type: Boolean})
-  checked = false;
+import { style } from './mwc-switch-css';
+import { MDCSwitch } from '@material/switch';
+import { LitElement,html } from '@polymer/lit-element';
 
-  @property({type: Boolean})
-  disabled = false;
+export class Switch extends LitElement {
+  _asyncComponent: boolean;
+  checked: boolean;
+  value: string;
+  _boundInputChangeHandler: any;
+  _component: any;
+  disabled: boolean;
+  _formElement: any;
+  _componentRoot: any;
 
-  _root: HTMLElement | null = null;
-  private _foundation: MDCSwitchFoundation | null = null;
+  componentReady(): any {
 
-  static get formElementSelector() {
-    return MDCSwitchFoundation.strings.NATIVE_CONTROL_SELECTOR;
+  }
+  static get ComponentClass() {
+    return MDCSwitch;
   }
 
+  static get componentSelector() {
+    return '.mdc-switch';
+  }
+
+  static get properties() {
+    return {
+      checked: { type: Boolean },
+      disabled: { type: Boolean },
+      value: { type: String }
+    };
+  }
+
+  // TODO(sorvell): need to add delegatesFocus to ShadyDOM. Using it here,
+  // allows tabIndex order to be changed (note, > 0 is dubious but -1 seems useful)
+  createRenderRoot() {
+    return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  }
+
+  constructor() {
+    super();
+    this._asyncComponent = true;
+    this.checked = false;
+    this.disabled = false;
+    this.value = '';
+    this._boundInputChangeHandler = this._inputChangeHandler.bind(this);
+  }
+
+  // TODO(sorvell) #css: add outline none to avoid focus decoration
   renderStyle() {
     return style;
   }
 
-  private _handleChange(e: Event) {
-    this._foundation!.handleChange(e);
-  }
-
-  private _initRipple() {
-    const {RIPPLE_SURFACE_SELECTOR} = MDCSwitchFoundation.strings;
-    const rippleSurface: HTMLElement = this.shadowRoot!.querySelector(RIPPLE_SURFACE_SELECTOR);
-    return attachRipple(this, rippleSurface, this._formElement);
-  }
-
   render() {
+    const { checked, disabled } = this;
     return html`
-      ${this.renderStyle()}
+       ${this.renderStyle()}
       <div class="mdc-switch">
         <div class="mdc-switch__track"></div>
         <div class="mdc-switch__thumb-underlay">
           <div class="mdc-switch__thumb">
-            <input type="checkbox" id="basic-switch" class="mdc-switch__native-control" role="switch" @change="${(e: Event) => this._handleChange(e)}}">
+            <input type="checkbox" ?checked="${checked}" ?disabled="${disabled}" id="basic-switch" class="mdc-switch__native-control" role="switch"
+              @change="${this._boundInputChangeHandler}">
           </div>
         </div>
       </div>
       <slot></slot>
       `;
   }
-
-  update(changedProperties: PropertyValues) {
-    super.update(changedProperties);
-    if (changedProperties.has('disabled')) {
-      this._foundation.setDisabled(this.disabled);
-    }
-    if (changedProperties.has('checked')) {
-      this._foundation.setChecked(this.checked);
-    }
+  firstUpdated(){
+    this._componentRoot = this.shadowRoot!.querySelector(Switch.componentSelector);
+    this._component = new (Switch.ComponentClass)(this._componentRoot);   
   }
-
-  firstRendered() {
-    super.firstRendered();
-    this._root = this.shadowRoot!.querySelector('.mdc-switch');
-    this._foundation = new MDCSwitchFoundation({
-      addClass: (className: string) => {this._root!.classList.add(className)},
-      removeClass: (className: string) => {this._root!.classList.remove(className)},
-      setNativeControlChecked: (checked: boolean) => {this._formElement!.checked = checked},
-      setNativeControlDisabled: (disabled: boolean) => {this._formElement!.disabled = disabled}
-    });
-    this._initRipple();
+  _inputChangeHandler(e) {
+    this.checked = e.target.checked;
   }
 }
 

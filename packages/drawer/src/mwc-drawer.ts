@@ -14,34 +14,38 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, property, PropertyValues} from '@polymer/lit-element/lit-element.js';
-import {MDCPersistentDrawerFoundation, MDCTemporaryDrawerFoundation, util} from '@material/drawer';
-import {style} from './mwc-drawer-css.js';
+import { LitElement, html, property, PropertyValues } from '@polymer/lit-element';
+import { MDCDismissibleDrawerFoundation, MDCModalDrawerFoundation } from '@material/drawer';
+import * as util from "@material/drawer/util";
+
+import { style } from './mwc-drawer-css.js';
+//import { MDCDrawerAdapter } from '../custom_typings/@material/drawer/index.js';
+
 
 const kindToFoundation = {
-  temporary: MDCTemporaryDrawerFoundation,
-  persistent: MDCPersistentDrawerFoundation
+  temporary: MDCModalDrawerFoundation,
+  persistent: MDCDismissibleDrawerFoundation
 }
 
-function foundationForKind(kind) {
+function foundationForKind(kind: string): MDCDismissibleDrawerFoundation | MDCModalDrawerFoundation {
   return kindToFoundation[kind] || kindToFoundation.temporary;
 }
 
 export class Drawer extends LitElement {
 
-  @property({type: String})
+  @property({ type: String })
   kind: 'temporary';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   opened = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   hasHeader = false;
 
-  private _root: HTMLElement|undefined;
-  private _drawer: HTMLElement|undefined;
+  private _root: HTMLElement | undefined;
+  private _drawer: HTMLElement | undefined;
 
-  private _foundation: MDCPersistentDrawerFoundation | MDCTemporaryDrawerFoundation | null = null;
+  private _foundation: MDCDismissibleDrawerFoundation | MDCModalDrawerFoundation | null = null;
 
   renderStyle() {
     return style;
@@ -49,12 +53,14 @@ export class Drawer extends LitElement {
 
   render() {
     return html`
-      ${this.renderStyle()}
+       ${this.renderStyle()}
       <aside class="mdc-drawer mdc-drawer--${this.kind} mdc-typography">
         <nav class="mdc-drawer__drawer">
-          ${this.hasHeader && html`<header class="mdc-drawer__header">
+          ${this.hasHeader && html`
+          <header class="mdc-drawer__header">
             <div class="mdc-drawer__header-content">
-              <slot name="header"><slot>
+              <slot name="header">
+                <slot>
             </div>
           </header>`}
           <nav class="mdc-drawer__content">
@@ -67,18 +73,20 @@ export class Drawer extends LitElement {
 
   firstRendered() {
     this._root = this.shadowRoot.querySelector('aside');
-    this._drawer = this.shadowRoot.querySelector('mdc-drawer__drawer');
+    this._drawer = this.shadowRoot.querySelector('.mdc-drawer__drawer');
   }
 
   update(changedProperties: PropertyValues) {
     super.update(changedProperties);
+    const { _root } = this;
     if (changedProperties.has('kind')) {
       if (this._foundation) {
         this._foundation.destroy();
       }
       const Foundation = foundationForKind(this.kind);
+      const {FOCUSABLE_ELEMENTS, OPACITY_VAR_NAME} = MDCModalDrawerFoundation.strings;
       const adapter = {
-        addClass: (className) => this._root.classList.add(className),
+        addClass: (className: string) => this._root.classList.add(className),
         removeClass: (className) => this._root.classList.remove(className),
         hasClass: (className) => this._root.classList.contains(className),
         hasNecessaryDom: true,
@@ -106,8 +114,8 @@ export class Drawer extends LitElement {
         makeElementUntabbable: (el) => el.setAttribute('tabindex', -1),
         isRtl: () => getComputedStyle(this._root).getPropertyValue('direction') === 'rtl',
         isDrawer: (el) => el === this._drawer,
-        notifyOpen: () => this.emit(MDCPersistentDrawerFoundation.strings.OPEN_EVENT),
-        notifyClose: () => this.emit(MDCPersistentDrawerFoundation.strings.CLOSE_EVENT),
+        notifyOpen: () => this.dispatchEvent(new Event(MDCDismissibleDrawerFoundation.strings.OPEN_EVENT)),
+        notifyClose: () => this.dispatchEvent(new Event(MDCDismissibleDrawerFoundation.strings.CLOSE_EVENT)),
       };
       if (this.kind === 'temporary') {
         Object.assign(adapter, {
@@ -116,11 +124,11 @@ export class Drawer extends LitElement {
           eventTargetHasClass: (target, className) => target.classList.contains(className),
           registerTransitionEndHandler: (handler) => this._drawer.addEventListener('transitionend', handler),
           deregisterTransitionEndHandler: (handler) => this._drawer.removeEventListener('transitionend', handler),
-          notifyOpen: () => this.emit(MDCTemporaryDrawerFoundation.strings.OPEN_EVENT),
-          notifyClose: () => this.emit(MDCTemporaryDrawerFoundation.strings.CLOSE_EVENT),
+          notifyOpen: () => this.dispatchEvent(new Event(MDCModalDrawerFoundation.strings.OPEN_EVENT)),
+          notifyClose: () => this.dispatchEvent(new Event(MDCModalDrawerFoundation.strings.CLOSE_EVENT)),
         });
       }
-      this._foundation = new Foundation({this._root, adapter});
+      this._foundation = new Foundation({ _root, adapter });
     }
     if (changedProperties.has('opened')) {
       this._foundation.setOpen(this.opened);

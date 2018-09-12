@@ -14,11 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, classString as c$, renderAttributes} from '@polymer/lit-element/lit-element.js';
-import {style} from './mwc-list-item-css.js';
-import '@material/mwc-icon/mwc-icon-font.js';
+import {LitElement, html} from '@polymer/lit-element';
+import {style} from './mwc-list-item-css';
+import '@material/mwc-icon/mwc-icon-font';
 
 export class ListItem extends LitElement {
+  label: string;
+  icon: string;
+  disabled: boolean;
+  _listItem: any;
   static get properties() {
     return {
       label: {type: String},
@@ -53,7 +57,7 @@ export class ListItem extends LitElement {
   }
 
   firstRendered() {
-    this._listItem = this.shadowRoot.querySelector('.mdc-list-item');
+    this._listItem = this.shadowRoot!.querySelector('.mdc-list-item');
   }
 
   get listItem() {

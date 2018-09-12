@@ -14,16 +14,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement, MDCWebComponentMixin, html} from '@material/mwc-base/component-element.js';
-import {style} from './mwc-icon-toggle-css.js';
-import {MDCIconToggle} from '@material/icon-toggle';
-import '@material/mwc-icon/mwc-icon-font.js';
+import { FormElement } from '@material/mwc-base/form-element';
+import { style } from './mwc-icon-toggle-css';
+import { MDCIconToggle } from '@material/icon-toggle';
+import '@material/mwc-icon/mwc-icon-font';
+import { LitElement, html } from '@polymer/lit-element';
 
-export class MDCWCIconToggle extends MDCWebComponentMixin(MDCIconToggle) {}
-
-export class IconToggle extends ComponentElement {
+export class IconToggle extends LitElement {
+  icon: string;
+  offIcon: string;
+  label: string;
+  offLabel: string;
+  disabled: boolean;
+  on: boolean;
+  _boundChangeHandler: any;
   static get ComponentClass() {
-    return MDCWCIconToggle;
+    return MDCIconToggle;
   }
 
   static get componentSelector() {
@@ -32,18 +38,17 @@ export class IconToggle extends ComponentElement {
 
   static get properties() {
     return {
-      disabled: {type: Boolean},
-      on: {type: Boolean},
-      icon: {type: String},
-      offIcon: {type: String},
-      label: {type: String},
-      offLabel: {type: String} ,
+      disabled: { type: Boolean },
+      on: { type: Boolean },
+      icon: { type: String },
+      offIcon: { type: String },
+      label: { type: String },
+      offLabel: { type: String }
     };
   }
 
   constructor() {
     super();
-    this._asyncComponent = true;
     this.icon = '';
     this.offIcon = '';
     this.label = '';
@@ -58,7 +63,7 @@ export class IconToggle extends ComponentElement {
   }
 
   createRenderRoot() {
-    return this.attachShadow({mode: 'open', delegatesFocus: true});
+    return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
   renderStyle() {
@@ -67,28 +72,13 @@ export class IconToggle extends ComponentElement {
 
   // TODO(sorvell) #css: added display
   render() {
-    const {disabled, icon, offIcon, label, offLabel} = this;
-    offIcon = offIcon || icon;
+    const { disabled, icon, offIcon, label, offLabel } = this;
     return html`
-      ${this.renderStyle()}
-      <span class="mdc-icon-toggle material-icons ${disabled ? 'mdc-icon-toggle--disabled' : ''}"
-            role="button"
-            aria-disabled="${disabled}"
-            tabindex="0"
-            data-toggle-on='{"label": "${label}", "content": "${icon}"}'
-            data-toggle-off='{"label": "${offLabel}", "content": "${offIcon}"}'
-            @MDCIconToggle:change="${this._boundChangeHandler}">
+       ${style}
+      <span class="mdc-icon-toggle material-icons ${disabled ? 'mdc-icon-toggle--disabled' : ''}" role="button" aria-disabled="${disabled}"
+        tabindex="0" data-toggle-on='{"label": "${label}", "content": "${icon}"}' data-toggle-off='{"label": "${offLabel}", "content": "${offIcon || icon}"}'
+        @MDCIconToggle:change="${this._boundChangeHandler}">
       </span>`;
-  }
-
-  update(changedProperties) {
-    if (changedProperties.has('icon') || changedProperties.has('label') ||
-      changedProperties.has('offIcon') || changedProperties.has('offLabel')) {
-      this.componentReady().then((component) => component.refreshToggleData());
-    }
-    if (changedProperties.has('on')) {
-      this.componentReady().then((component) => component.on = props.on);
-    }
   }
 
   _changeHandler(e) {

@@ -14,13 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, classString as c$} from '@polymer/lit-element/lit-element.js';
+import {LitElement, html} from '@polymer/lit-element';
+import { classString } from "@polymer/lit-element/lib/render-helpers";
 import {style} from './mwc-fab-css.js';
-import {MDCWCRipple} from '@material/mwc-ripple/mwc-ripple.js';
-import {afterNextRender} from '@material/mwc-base/utils.js';
+import {MDCRipple, attachRipple, RippleCapableComponent} from '@material/mwc-ripple';
+import {afterNextRender} from '@material/mwc-base/utils';
 import '@material/mwc-icon/mwc-icon-font.js';
 
-export class Fab extends LitElement {
+export class Fab extends LitElement implements RippleCapableComponent {
+
+  private _ripple?: MDCRipple | null = null;
+  icon: string;
+  mini: boolean;
+  exited: boolean;
+  label: string;
+  _root: HTMLElement | null = null;
+  disabled: boolean;
+
   static get properties() {
     return {
       mini: {type: Boolean},
@@ -36,6 +46,7 @@ export class Fab extends LitElement {
     this.icon = '';
     this.mini = false;
     this.exited = false;
+    this.disabled = false;
     this.label = '';
   }
 
@@ -45,7 +56,12 @@ export class Fab extends LitElement {
 
   async firstRendered() {
     await afterNextRender();
-    this._ripple = new MDCWCRipple(this.shadowRoot.querySelector('.mdc-fab'));
+    const container = this.parentElement || this;
+    // TODO(sorvell) #css: this might be bad since the container might be positioned.
+    container.style.position = 'relative';
+    this._root = this.shadowRoot!.querySelector('.mdc-button');
+    this._ripple = attachRipple(this, this._root, container);
+    //this._ripple = new MDCWCRipple(this.shadowRoot.querySelector('.mdc-fab'));
   }
 
   renderStyle() {
@@ -54,7 +70,7 @@ export class Fab extends LitElement {
 
   render() {
     const {icon, mini, exited, disabled, label} = this;
-    const hostClasses = c$({
+    const hostClasses = classString({
       'mdc-fab--mini': mini,
       'mdc-fab--exited': exited,
     });

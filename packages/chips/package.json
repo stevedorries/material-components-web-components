@@ -2,7 +2,7 @@
   "name": "@material/mwc-chips",
   "version": "0.1.2",
   "description": "",
-  "main": "mwc-chip.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +15,7 @@
     "@polymer/lit-element": "^0.6.0-dev.6"
   },
   "devDependencies": {
+    "typescript": "latest",    
     "@material/mwc-sass-render": "^0.1.2"
   },
   "publishConfig": {

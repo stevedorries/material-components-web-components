@@ -14,15 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {FormableComponentElement, MDCWebComponentMixin, html} from '@material/mwc-base/formable-component-element.js';
-import {style} from './mwc-checkbox-css.js';
-import {MDCCheckbox} from '@material/checkbox';
+import { FormElement } from '@material/mwc-base/form-element';
+import { style } from './mwc-checkbox-css';
+import { MDCCheckbox } from '@material/checkbox';
+import { LitElement, html } from '@polymer/lit-element';
 
-export class MDCWCCheckbox extends MDCWebComponentMixin(MDCCheckbox) {}
+export class Checkbox extends LitElement {
+  _asyncComponent: boolean;
+  checked: boolean;
+  value: string;
+  _boundInputChangeHandler: any;
+  _component: any;
+  disabled: boolean;
+  indeterminate: boolean;
+  _formElement: any;
+  _componentRoot: any;
+  componentReady(): any {
 
-export class Checkbox extends FormableComponentElement {
+  }
   static get ComponentClass() {
-    return MDCWCCheckbox;
+    return MDCCheckbox;
   }
 
   static get componentSelector() {
@@ -31,17 +42,17 @@ export class Checkbox extends FormableComponentElement {
 
   static get properties() {
     return {
-      checked: {type: Boolean},
-      indeterminate: {type: Boolean},
-      disabled: {type: Boolean},
-      value: {type: String},
+      checked: { type: Boolean },
+      indeterminate: { type: Boolean },
+      disabled: { type: Boolean },
+      value: { type: String }
     };
   }
 
   // TODO(sorvell): need to add delegatesFocus to ShadyDOM. Using it here,
   // allows tabIndex order to be changed (note, > 0 is dubious but -1 seems useful)
   createRenderRoot() {
-    return this.attachShadow({mode: 'open', delegatesFocus: true});
+    return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
   constructor() {
@@ -60,41 +71,24 @@ export class Checkbox extends FormableComponentElement {
   }
 
   render() {
-    const {checked, value} = this;
+    const { checked, value } = this;
     return html`
-      ${this.renderStyle()}
+       ${this.renderStyle()}
+      <!-- Style should be above this comment -->
       <div class="mdc-checkbox">
-        <input type="checkbox"
-          class="mdc-checkbox__native-control"
-          checked="${checked}" value="${value}"
-          @change="${this._boundInputChangeHandler}">
+        <input type="checkbox" class="mdc-checkbox__native-control" checked="${checked}" value="${value}" @change="${this._boundInputChangeHandler}">
         <div class="mdc-checkbox__background">
-          <svg class="mdc-checkbox__checkmark"
-              viewBox="0 0 24 24">
-            <path class="mdc-checkbox__checkmark-path"
-              fill="none"
-              stroke="white"
-              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+          <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+            <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
           </svg>
           <div class="mdc-checkbox__mixedmark"></div>
         </div>
       </div>`;
   }
-
-  get indeterminate() {
-    return this._component && this._component.indeterminate;
-  }
-
-  set indeterminate(value) {
-    this.componentReady().then((component) => component.indeterminate = value);
-  }
-
-  get disabled() {
-    return this._component && this._component.disabled;
-  }
-
-  set disabled(value) {
-    this.componentReady().then((component) => component.disabled = value);
+  firstUpdated(){
+    this._formElement = this.shadowRoot!.querySelector(FormElement.formElementSelector);
+    this._componentRoot = this.shadowRoot!.querySelector(Checkbox.componentSelector);
+    this._component = new (Checkbox.ComponentClass)(this._componentRoot);   
   }
 
   _inputChangeHandler(e) {

@@ -16,10 +16,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <html>
+
 <head>
   <title>formfield demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script  src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script type="module" src="../node_modules/@material/mwc-formfield/mwc-formfield.js"></script>
   <script type="module" src="../node_modules/@material/mwc-checkbox/mwc-checkbox.js"></script>
   <script type="module" src="../node_modules/@material/mwc-radio/mwc-radio.js"></script>
@@ -28,10 +29,13 @@ limitations under the License.
   <script type="module" src="../node_modules/@material/mwc-icon/mwc-icon.js"></script>
   <link rel="stylesheet" href="demo-component.css">
 </head>
+
 <body class="unresolved">
   <header>
-    <a href="index.html"><mwc-icon>arrow_back</mwc-icon>
-    <span>Formfield</span></a>
+    <a href="index.html">
+      <mwc-icon>arrow_back</mwc-icon>
+      <span>Formfield</span>
+    </a>
   </header>
 
   <main>
@@ -56,24 +60,34 @@ limitations under the License.
     </mwc-formfield>
 
     <h4>Radio Button</h4>
-    <mwc-formfield label="This is a radio.">
-      <mwc-radio id="one" name="a"></mwc-radio>
-    </mwc-formfield>
-    <mwc-formfield label="This is a radio.">
-      <mwc-radio id="two" name="a" checked></mwc-radio>
-    </mwc-formfield>
-    <mwc-formfield label="This is a radio.">
-      <mwc-radio id="three" name="a"></mwc-radio>
-    </mwc-formfield>
-
+    <div>
+      <mwc-formfield label="This is a radio.">
+        <mwc-radio id="one" name="a"></mwc-radio>
+      </mwc-formfield>
+      <mwc-formfield label="This is a radio.">
+        <mwc-radio id="two" name="a" checked></mwc-radio>
+      </mwc-formfield>
+      <mwc-formfield label="This is a radio.">
+        <mwc-radio id="three" name="a"></mwc-radio>
+      </mwc-formfield>
+    </div>
     <h4>Slider</h4>
     <mwc-formfield label="This is a slider.">
       <mwc-slider></mwc-slider>
-    </mwc-formfield>
+    </mwc-formfield><br />
+    <mwc-formfield label="This is a discrete slider.">
+        <mwc-slider discrete></mwc-slider>
+      </mwc-formfield><br />
+    <mwc-formfield label="This is a discrete slider with markers.">
+        <mwc-slider discrete markers></mwc-slider>
+      </mwc-formfield>
+    
+    
   </main>
 
   <script>
     addEventListener('load', () => document.body.classList.remove('unresolved'));
   </script>
 </body>
+
 </html>

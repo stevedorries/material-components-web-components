@@ -15,20 +15,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import {LitElement} from '@polymer/lit-element';
+import { MDCWebComponentBase } from './mdc-web-component';
 
-export class FormElement extends LitElement {
+
+export abstract class FormElement extends MDCWebComponentBase {
   protected _formElement: HTMLInputElement | null = null;
-
+  protected _ripple: any | null = null;
+  protected _component: any;
+  protected _componentRoot: Element | null = null;
   static get formElementSelector():string {
     return 'input';
   }
-  
+  static get componentSelector():string {
+    return '';
+  }
+  static get ComponentClass(): any {
+    throw new Error('Must provide component class');
+  }
   createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
 
-  firstRendered() {
-    this._formElement = this.shadowRoot!.querySelector((this.constructor as typeof FormElement).formElementSelector);
+  get ripple(): any {
+    return this._ripple;
+  }
+  
+  firstUpdated() {
+    this._formElement = this.shadowRoot!.querySelector(FormElement.formElementSelector);
+    this._componentRoot = this.shadowRoot!.querySelector((this.constructor as typeof FormElement).componentSelector);
+    this._component = new ((this.constructor as typeof FormElement).ComponentClass)(this._componentRoot);   
   }
 
   click() {

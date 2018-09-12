@@ -14,76 +14,62 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement, html, MDCWebComponentMixin} from '@material/mwc-base/component-element.js';
-import {callWhenReady, findAssignedNode,} from '@material/mwc-base/utils.js';
-import {classString} from '@polymer/lit-element/render-helpers.js';
-import {style} from './mwc-formfield-css.js';
-import {MDCFormField} from '@material/form-field';
-
-export class MDCWCFormField extends MDCWebComponentMixin(MDCFormField) {};
-
-
-export class Formfield extends ComponentElement {
-  static get ComponentClass() {
-    return MDCWCFormField;
-  }
-
-  static get componentSelector() {
-    return '.mdc-form-field';
-  }
-
-  static get properties() {
-    return {
-      label: {type: String},
-      alignEnd: {type: Boolean},
-    };
-  }
-
-  constructor() {
-    super();
-    this._asyncComponent = true;
-    this.label = '';
-    this.alignEnd = false;
-    this._setProperty('_labelClickHandler', (e) => {
-      this._labelClickHandler(e);
-    });
-  }
-
-  renderStyle() {
-    return style;
-  }
-
-  render() {
-    const {label, alignEnd, _labelClickHandler} = this;
-    return html`${this.renderStyle()}
-      <div class="mdc-form-field ${alignEnd ? 'mdc-form-field--align-end' : ''}">
-        <slot></slot>
-        <label class="mdc-label" @click="${_labelClickHandler}">${label}</label>
-      </div>`;
-  }
-
-  update(changedProperties) {
-    super.update(changedProperties);
-    if (changedProperties.has('label') && this._input) {
-      if (this._input.localName == 'input') {
-        this._input.setAttribute('aria-label', props.label);
-      } else {
-        callWhenReady(this._input, 'setAriaLabel', [props.label]);
-      }
+import { LitElement, html } from '@polymer/lit-element';
+import { findAssignedNode } from '@material/mwc-base/utils';
+import { style } from './mwc-formfield-css';
+import { MDCFormField } from '@material/form-field';
+export class Formfield extends LitElement {
+    constructor() {
+        super();
+        this.label = '';
+        this.alignEnd = false;
+        this.__input = null;
+        this._boundLabelClickHandler = this._labelClickHandler.bind(this);
     }
-  }
-
-  _labelClickHandler() {
-    if (this._input) {
-      this._input.focus();
-      this._input.click();
+    static get ComponentClass() {
+        return MDCFormField;
     }
-  }
-
-  get _input() {
-    return this.__input = this.__input ||
-      findAssignedNode(this.shadowRoot.querySelector('slot'), '*');
-  }
+    static get componentSelector() {
+        return '.mdc-form-field';
+    }
+    static get properties() {
+        return {
+            alignEnd: { type: Boolean },
+            label: { type: String },
+        };
+    }
+    renderStyle() {
+        return style;
+    }
+    render() {
+        const { label, alignEnd } = this;
+        return html `${this.renderStyle()}
+<div class="mdc-form-field ${alignEnd ? 'mdc-form-field--align-end' : ''}">
+  <slot></slot>
+  <label @click="${this._boundLabelClickHandler}">${label}</label>
+</div>`;
+    }
+    //
+    _labelClickHandler() {
+        if (this._input) {
+            this._input.focus();
+            this._input.click();
+            this._input.blur();
+        }
+    }
+    get _input() {
+        if (this.__input)
+            return this.__input;
+        let slot = this.shadowRoot.querySelector('slot');
+        let ___input = null;
+        let nodes = slot.assignedNodes({ flatten: true });
+        nodes.forEach(node => { if (node instanceof HTMLElement && node.shadowRoot)
+            ___input = node.shadowRoot.querySelector('input'); });
+        if (___input)
+            return this.__input = ___input;
+        return this.__input = slot ?
+            findAssignedNode(slot, 'input') : null;
+    }
 }
-
 customElements.define('mwc-formfield', Formfield);
+//# sourceMappingURL=mwc-formfield.js.map

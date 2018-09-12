@@ -14,17 +14,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html} from '@polymer/lit-element';
-import {style} from './mwc-icon-host-css';
-import './mwc-icon-font';
+import {LitElement, html} from '@polymer/lit-element/lit-element.js';
+import {style} from './mwc-list-item-separator-css.js';
 
-export class Icon extends LitElement {
-  renderStyle() {
-    return style;
+export class ListItemGroup extends LitElement {
+  label: string;
+  constructor() {
+      super();
+      this.label = '';
   }
+  static get properties() {
+      return {
+          label: { type: String }
+      };
+  }
+  renderStyle() {
+      return style;
+  }
+
   render() {
-    return html`${this.renderStyle()}<slot></slot>`;
+      const { label } = this;
+      return html`
+      ${this.renderStyle()}    
+      <h6 class="mdc-list-group__subheader">${label}</h6>
+      <slot></slot>
+      `;
   }
 }
 
-customElements.define('mwc-icon', Icon);
+customElements.define('mwc-list-item-group', ListItemGroup);

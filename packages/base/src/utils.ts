@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import {LitElement} from "@polymer/lit-element";
 function isCustomElementCandidate(element: HTMLElement) {
   return element.localName!.match('-');
 }
@@ -40,8 +41,8 @@ export function afterNextRender(): Promise<any> {
   return afterRenderPromise;
 }
 
-export function findAssignedNode(slot:HTMLSlotElement, selector:string):Element {
+export function findAssignedNode(slot:HTMLSlotElement, selector:string):Element {  
   return <Element>slot.assignedNodes({flatten: true}).find((value:Node) => {
-    return (value instanceof Element) && value.matches(selector);
+    return !(value instanceof LitElement) && (value instanceof Element) && value.matches(selector);
   });
 }

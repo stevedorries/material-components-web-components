@@ -16,7 +16,11 @@ limitations under the License.
 */
 
 // load material icons font
-const fontEl = document.createElement('link');
-fontEl.rel = 'stylesheet';
-fontEl.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-document.head.appendChild(fontEl);
+let count = document.querySelectorAll<HTMLLinkElement>("#materialIconsFont").length;
+if (count == 0) {
+    const fontEl = document.createElement('link');
+    fontEl.rel = 'stylesheet';
+    fontEl.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+    fontEl.id = "materialIconsFont";
+    document.head.appendChild(fontEl);
+}

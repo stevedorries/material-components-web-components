@@ -15,11 +15,16 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     // "allowJs": true,
-    "outDir": "./"
+    "outDir": "./",
+    "newLine": "LF",    
+    "typeRoots": [
+      "./node_modules/*","./custom_typings"
+    ]
   },
   "include": [
-    "custom_typings/**/*.ts",
-    "src/*.ts"
+    "custom_typings/*.ts",
+    "src/*.ts",
+    "src/*.d.ts"
   ],
   "exclude": []
 }

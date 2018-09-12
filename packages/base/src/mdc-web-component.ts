@@ -14,8 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import {LitElement} from '@polymer/lit-element';
 
 const hasCustomEventConstructor = typeof CustomEvent === 'function';
+let count = document.querySelectorAll<HTMLLinkElement>("#materialComponentsStyle").length;
+if (count == 0) {
+    const fontEl = document.createElement('link');
+    fontEl.rel = 'stylesheet';
+    fontEl.href = 'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css';
+    fontEl.id = "materialComponentsStyle";
+    document.head.appendChild(fontEl);
+}
+export abstract class MDCWebComponentBase extends LitElement {}
 
 export const MDCWebComponentMixin = (superClass) =>
 
@@ -23,28 +33,23 @@ export const MDCWebComponentMixin = (superClass) =>
     get host() {
       return this._host;
     }
-
     // TODO(sorvell): should be changed in MDC
     get activeElement() {
       return this.host.getRootNode().activeElement;
     }
-
     initialize(...args) {
       super.initialize(...args);
       this._host = this.root_.getRootNode().host;
     }
-
     // TODO(sorvell): would be nice in MDC
     createAdapter() {
       return null;
     }
-
     getDefaultFoundation() {
       const foundation = super.getDefaultFoundation();
       Object.assign(foundation.adapter_, this.createAdapter());
       return foundation;
     }
-
     // TODO(sorvell): convenient but maybe not best.
     emit(evtType, evtData, shouldBubble = false) {
       let evt;

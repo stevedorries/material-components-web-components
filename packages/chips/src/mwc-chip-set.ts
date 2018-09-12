@@ -14,23 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement, MDCWebComponentMixin, html} from '@material/mwc-base/component-element.js';
-import {classString as c$} from '@polymer/lit-element/lit-element.js';
-import {style} from './mwc-chip-set-css.js';
+import {ComponentElement, MDCWebComponentMixin} from '@material/mwc-base';
+import {html} from '@polymer/lit-element';
+import {classString} from '@polymer/lit-element/lib/render-helpers';
+import {style} from './mwc-chip-set-css';
 import {MDCChipSet} from '@material/chips';
 
-export class MDCWCChipSet extends MDCWebComponentMixin(MDCChipSet) {
-  get chips() {
-    return Array.from(this.host.chips).map((e) => e._component);
-  }
-
-  // override
-  set chips(value) {}
-}
-
 export class ChipSet extends ComponentElement {
+  _slot: HTMLSlotElement | null = null;
+  type: string;
   static get ComponentClass() {
-    return MDCWCChipSet;
+    return MDCChipSet;
   }
 
   static get componentSelector() {
@@ -54,7 +48,7 @@ export class ChipSet extends ComponentElement {
   }
 
   render() {
-    const hostClasses = c$({
+    const hostClasses = classString({
       'mdc-chip-set--choice': this.type == 'choice',
       'mdc-chip-set--filter': this.type == 'filter',
     });
@@ -64,13 +58,15 @@ export class ChipSet extends ComponentElement {
       <div class="mdc-chip-set ${hostClasses}"><slot></slot></div>`;
   }
 
-  firstRendered() {
-    this._slot = this.shadowRoot.querySelector('slot');
+  firstUpdated(changedProperties: any) {
+    super.firstUpdated(changedProperties);
+
+    this._slot = this.shadowRoot!.querySelector('slot');
   }
 
   // TODO(sorvell): handle slotchange.
   get chips() {
-    return this._slot.assignedNodes({flatten: true}).filter((e) => e.localName == 'mdc-chip');
+    return this._slot!.assignedNodes({flatten: true}).filter((e) => e.localName == 'mdc-chip');
   }
 }
 

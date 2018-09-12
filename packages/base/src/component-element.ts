@@ -22,30 +22,27 @@ export abstract class ComponentElement extends LitElement {
   _asyncComponent: boolean;
   _componentRoot: Element | null = null;
   _component: any;
-  _resolveComponentPromise?: (value?: {} | PromiseLike<{}> | undefined) => void;
-  _componentPromise?: Promise<{}>;
+  _resolveComponentPromise?: (value?: {} | PromiseLike<any>) => void;
+  _componentPromise?: Promise<any>;
   static get ComponentClass(): any {
     throw new Error('Must provide component class');
   }
 
-  static get componentSelector():string {
-    throw new Error('Must provide component selector');
-  }
+  static readonly componentSelector:string;
 
   constructor() {
     super();
     this._asyncComponent = false;
   }
 
-  async firstRendered() {
-    super._firstRendered();
+  firstUpdated(changedProperties:any) {    
     if (this._asyncComponent) {
-      await afterNextRender();
+       afterNextRender();
     }
     this._makeComponent();
   }
 
-  _makeComponent() {
+ protected _makeComponent() {
     this._componentRoot = this.shadowRoot!.querySelector((this.constructor as typeof ComponentElement).componentSelector);
     this._component = new ((this.constructor as typeof ComponentElement).ComponentClass)(this._componentRoot);
     if (this._resolveComponentPromise) {

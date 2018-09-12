@@ -14,15 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement} from './component-element';
-export {MDCWebComponentMixin} from './component-element';
+import { ComponentElement } from './component-element';
+export { MDCWebComponentMixin } from './component-element';
 
 export abstract class FormableComponentElement extends ComponentElement {
   protected _formElement: HTMLInputElement | null = null;
 
-  static get formElementSelector() {
-    return 'input';
-  }
+  static formElementSelector = "input";
+
 
   constructor() {
     super();
@@ -30,8 +29,8 @@ export abstract class FormableComponentElement extends ComponentElement {
   }
 
   async firstRendered() {
-    super.firstRendered();
-    this._formElement = this.shadowRoot!.querySelector<HTMLInputElement>((this.constructor as typeof FormableComponentElement).formElementSelector);
+   // super.firstRendered();
+    this._formElement = this.shadowRoot!.querySelector<HTMLInputElement>(FormableComponentElement.formElementSelector);
   }
 
   click() {
@@ -47,7 +46,7 @@ export abstract class FormableComponentElement extends ComponentElement {
     }
   }
 
-  setAriaLabel(value) {
+  setAriaLabel(value: string) {
     if (this._formElement) {
       this._formElement.setAttribute('aria-label', value);
     }
