@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { FormElement } from '@material/mwc-base/form-element';
+
 import { LitElement, html } from '@polymer/lit-element';
 import { classString } from "@polymer/lit-element/lib/render-helpers";
 import { style } from './mwc-slider-css';
@@ -75,6 +75,15 @@ export class Slider extends LitElement {
     this._component = new (Slider.ComponentClass)(this._componentRoot);
     this._componentRoot!.addEventListener('MDCSlider:input', (e: any) => {
       this.value = e.detail.value;
+      let evt = new CustomEvent('MDCWCSlider:input', { detail: e.detail });
+
+      this.dispatchEvent(evt);
+    });
+    this._componentRoot!.addEventListener('MDCSlider:change', (e: any) => {
+      this.value = e.detail.value;
+      let evt = new CustomEvent('MDCWCSlider:change', { detail: e.detail });
+
+      this.dispatchEvent(evt);
     });
   }
 

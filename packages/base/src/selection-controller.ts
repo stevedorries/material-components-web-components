@@ -14,31 +14,43 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+
+
+interface SelectionSet extends Set<Element> {
+  _selected: HTMLElement | null;
+  _ordered: Array<Element> | null;
+}
+
 export class SelectionController {
-  protected _sets: {};
+  protected _sets: Map<String, SelectionSet>;
   protected _property: string;
   protected _keyIsDown: boolean = false;
   protected _mouseIsDown: boolean = false;
   protected _blurRaf: any;
-  protected _focusedSet: any;
+  protected _focusedSet: SelectionSet | null = null;
   protected _updating: boolean = false;
-  static getController(element) {
+  static getController(element: any): SelectionController | undefined {
     const root = element.getRootNode();
-    if (!root.__selectionController) {
-      root.__selectionController = new SelectionController(root);
+    if (root) {
+      if (!root.__selectionController) {
+        root.__selectionController = new SelectionController(root);
+      }
+      return root.__selectionController;
     }
-    return root.__selectionController;
+    else
+      return undefined;
   }
 
   constructor(node) {
     node.addEventListener('keydown', (e) => this._keyDownHandler(e));
     node.addEventListener('mousedown', (e) => this._mousedownHandler(e));
     node.addEventListener('mouseup', (e) => this._mouseupHandler(e));
-    this._sets = {};
+    this._sets = new Map();
     this._property = 'checked';
   }
 
-  _keyDownHandler(e) {
+  _keyDownHandler(e: KeyboardEvent) {
     this._keyIsDown = true;
     const element = e.target;
     if (!this.has(element)) {
@@ -67,13 +79,13 @@ export class SelectionController {
   previous(element) {
     const order = this.getOrdered(element);
     const i = order.indexOf(element);
-    this.select(order[i-1] || order[order.length-1]);
+    this.select(order[i - 1] || order[order.length - 1]);
   }
 
   next(element) {
     const order = this.getOrdered(element);
     const i = order.indexOf(element);
-    this.select(order[i+1] || order[0]);
+    this.select(order[i + 1] || order[0]);
   }
 
   select(element) {
@@ -98,8 +110,8 @@ export class SelectionController {
     this._focusedSet = set;
     if (currentFocusedSet != set && set._selected && set._selected != element) {
       // TODO(sorvell): needed because MDC Ripple delays focus/blur until RAF.
-      requestAnimationFrame(() =>{
-        set._selected.focus();
+      requestAnimationFrame(() => {
+        set._selected!.focus();
       });
     }
   }
@@ -126,16 +138,16 @@ export class SelectionController {
       for (const e of set) {
         set._ordered.push(e);
       }
-      set._ordered.sort((a:Node, b:Node) =>
+      set._ordered.sort((a: Node, b: Node) =>
         a.compareDocumentPosition(b) == Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0
       );
     }
     return set._ordered;
   }
 
-  getSet(name):any {    
+  getSet(name: string): SelectionSet {
     if (!this._sets[name]) {
-      this._sets[name] = new Set();
+      this._sets[name] = new Set<Element>();
     }
     return this._sets[name];
   }

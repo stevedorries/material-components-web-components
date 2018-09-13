@@ -25,11 +25,22 @@ if (count == 0) {
     fontEl.id = "materialComponentsStyle";
     document.head.appendChild(fontEl);
 }
-export abstract class MDCWebComponentBase extends LitElement {}
+
+export interface MDCWebComponentBase {
+  host:any;
+  // TODO(sorvell): should be changed in MDC
+  activeElement():Element;
+  initialize(...args):void;
+  // TODO(sorvell): would be nice in MDC
+  createAdapter():any|null;
+  getDefaultFoundation():any;
+  // TODO(sorvell): convenient but maybe not best.
+  emit(evtType:string, evtData:any, shouldBubble:boolean):void;
+}
 
 export const MDCWebComponentMixin = (superClass) =>
 
-  class MDCWebComponent extends superClass {
+  class MDCWebComponent extends superClass implements MDCWebComponentBase {
     get host() {
       return this._host;
     }

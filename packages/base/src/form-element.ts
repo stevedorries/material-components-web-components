@@ -16,22 +16,24 @@ limitations under the License.
 */
 import {LitElement} from '@polymer/lit-element';
 import { MDCWebComponentBase } from './mdc-web-component';
+export { MDCWebComponentBase, MDCWebComponentMixin } from './mdc-web-component';
+import { ComponentElement } from './component-element';
 
 
-export abstract class FormElement extends MDCWebComponentBase {
+export abstract class FormElement<T extends MDCWebComponentBase> extends ComponentElement<T> {
   protected _formElement: HTMLInputElement | null = null;
   protected _ripple: any | null = null;
-  protected _component: any;
+  protected _component?: T;
   protected _componentRoot: Element | null = null;
   static get formElementSelector():string {
     return 'input';
   }
-  static get componentSelector():string {
-    return '';
-  }
+  static readonly componentSelector:string = '';
+  
   static get ComponentClass(): any {
     throw new Error('Must provide component class');
   }
+  
   createRenderRoot() {
     return this.attachShadow({mode: 'open', delegatesFocus: true});
   }
@@ -41,7 +43,7 @@ export abstract class FormElement extends MDCWebComponentBase {
   }
   
   firstUpdated() {
-    this._formElement = this.shadowRoot!.querySelector(FormElement.formElementSelector);
+    this._formElement = this.shadowRoot!.querySelector((this.constructor as typeof FormElement).formElementSelector);
     this._componentRoot = this.shadowRoot!.querySelector((this.constructor as typeof FormElement).componentSelector);
     this._component = new ((this.constructor as typeof FormElement).ComponentClass)(this._componentRoot);   
   }
