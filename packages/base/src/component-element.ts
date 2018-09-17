@@ -14,34 +14,35 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { LitElement, PropertyValues } from '@polymer/lit-element';
-import { MDCWebComponentBase } from './mdc-web-component';
-export { MDCWebComponentBase, MDCWebComponentMixin } from './mdc-web-component';
+import {LitElement, html} from '@polymer/lit-element/lit-element.js';
+import {afterNextRender} from './utils.js';
+export {html} from '@polymer/lit-element/lit-element.js';
+export {MDCWebComponentMixin} from './mdc-web-component.js';
 
-export abstract class ComponentElement<T extends MDCWebComponentBase> extends LitElement {
-  
- protected _componentRoot: Element | null = null;
- protected _component?: T;
- protected _resolveComponentPromise?: (value?: {} | PromiseLike<any>) => void;
- protected _componentPromise?: Promise<any>;
- static get ComponentClass(): any {
+export class ComponentElement extends LitElement {
+  static get ComponentClass() {
     throw new Error('Must provide component class');
   }
 
-  static readonly componentSelector: string = '';
-
-  constructor() {
-    super();    
+  static get componentSelector() {
+    throw new Error('Must provide component selector');
   }
 
-  firstUpdated(_changedProperties: PropertyValues) {
-    
+  constructor() {
+    super();
+    this._asyncComponent = false;
+  }
+
+  async firstUpdated() {
+    if (this._asyncComponent) {
+      await afterNextRender();
+    }
     this._makeComponent();
   }
 
-  protected _makeComponent() {
-    this._componentRoot = this.shadowRoot!.querySelector((this.constructor as typeof ComponentElement).componentSelector);
-    this._component = new ((this.constructor as typeof ComponentElement).ComponentClass)(this._componentRoot);
+  _makeComponent() {
+    this._componentRoot = this.shadowRoot.querySelector(this.constructor.componentSelector);
+    this._component = new (this.constructor.ComponentClass)(this._componentRoot);
     if (this._resolveComponentPromise) {
       this._resolveComponentPromise(this._component);
     }
@@ -53,7 +54,7 @@ export abstract class ComponentElement<T extends MDCWebComponentBase> extends Li
         this._resolveComponentPromise = resolve;
       });
       if (this._component) {
-        this._resolveComponentPromise!(this._component);
+        this._resolveComponentPromise(this._component);
       }
     }
     return this._componentPromise;

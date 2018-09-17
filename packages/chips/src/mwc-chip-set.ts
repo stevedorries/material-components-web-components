@@ -14,17 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import {LitElement, html} from '@polymer/lit-element';
-import {classString} from '@polymer/lit-element/lib/render-helpers';
-import {style} from './mwc-chip-set-css';
+import {ComponentElement, MDCWebComponentMixin, html} from '@material/mwc-base/component-element.js';
+import {classMap} from 'lit-html/directives/classMap.js';
+import {style} from './mwc-chip-set-css.js';
 import {MDCChipSet} from '@material/chips';
 
-export class ChipSet extends LitElement {
-  _slot: HTMLSlotElement | null = null;
-  type: string;
+export class MDCWCChipSet extends MDCWebComponentMixin(MDCChipSet) {
+  get chips() {
+    return Array.from(this.host.chips).map((e) => e._component);
+  }
+
+  // override
+  set chips(value) {}
+}
+
+export class ChipSet extends ComponentElement {
   static get ComponentClass() {
-    return MDCChipSet;
+    return MDCWCChipSet;
   }
 
   static get componentSelector() {
@@ -39,7 +45,7 @@ export class ChipSet extends LitElement {
 
   constructor() {
     super();
-    
+    this._asyncComponent = true;
     this.type = '';
   }
 
@@ -48,25 +54,24 @@ export class ChipSet extends LitElement {
   }
 
   render() {
-    const hostClasses = classString({
+    const hostClassInfo = {
       'mdc-chip-set--choice': this.type == 'choice',
       'mdc-chip-set--filter': this.type == 'filter',
-    });
+    };
     // TODO(sorvell) #css: added display
     return html`
       ${this.renderStyle()}
-      <div class="mdc-chip-set ${hostClasses}"><slot></slot></div>`;
+      <div class="mdc-chip-set ${classMap(hostClassInfo)}"><slot></slot></div>`;
   }
 
-  firstUpdated(changedProperties: any) {
-    super.firstUpdated(changedProperties);
-
-    this._slot = this.shadowRoot!.querySelector('slot');
+  firstUpdated() {
+    super.firstUpdated();
+    this._slot = this.shadowRoot.querySelector('slot');
   }
 
   // TODO(sorvell): handle slotchange.
   get chips() {
-    return this._slot!.assignedNodes({flatten: true}).filter((e) => e.localName == 'mwc-chip');
+    return this._slot.assignedNodes({flatten: true}).filter((e) => e.localName == 'mdc-chip');
   }
 }
 

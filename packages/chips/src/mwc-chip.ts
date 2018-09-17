@@ -14,22 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-import { style } from './mwc-chip-css.js';
-import { MDCChip } from '@material/chips';
+import {ComponentElement, MDCWebComponentMixin, html} from '@material/mwc-base/component-element.js';
+import {classMap} from 'lit-html/directives/classMap.js';
+import {style} from './mwc-chip-css.js';
+import {MDCChip} from '@material/chips';
 import '@material/mwc-icon/mwc-icon-font.js';
-import { LitElement, html } from '@polymer/lit-element';
 
-export class Chip extends LitElement {
-  leadingIcon: string;
-  trailingIcon: string;
-  label: string;
-  active: boolean;
-  _boundInteractionHandler: any;
-  _componentRoot: HTMLElement | null = null;
-  _component: any;
+export class MDCWCChip extends MDCWebComponentMixin(MDCChip) {}
+
+export class Chip extends ComponentElement {
   static get ComponentClass() {
-    return MDCChip;
+    return MDCWCChip;
   }
 
   static get componentSelector() {
@@ -38,10 +33,10 @@ export class Chip extends LitElement {
 
   static get properties() {
     return {
-      leadingIcon: { type: String },
-      trailingIcon: { type: String },
-      label: { type: String },
-      active: { type: Boolean },
+      leadingIcon: {type: String},
+      trailingIcon: {type: String},
+      label: {type: String},
+      active: {type: Boolean},
     };
   }
 
@@ -60,25 +55,22 @@ export class Chip extends LitElement {
 
   // TODO(sorvell): Note, nice to have vars for activated colors.
   render() {
-    const { leadingIcon, trailingIcon, label, active } = this;
+    const {leadingIcon, trailingIcon, label} = this;
     const leadingIconPart = leadingIcon ?
       html`<i class="material-icons mdc-chip__icon mdc-chip__icon--leading">${leadingIcon}</i>` : '';
     const trailingIconPart = trailingIcon ?
       html`<i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">${trailingIcon}</i>` : '';
     // TODO(sorvell) #css: added display
     return html`
-       ${this.renderStyle()}
-      <div class="mdc-chip ${active ? 'mdc-chip--activated' : ''}" @MDCChip:interaction="${this._boundInteractionHandler}">
+      ${this.renderStyle()}
+      <div class="mdc-chip ${classMap({'mdc-chip--activated': this.active})}"
+        @MDCChip:interaction="${this._boundInteractionHandler}">
         ${leadingIconPart}
         <div class="mdc-chip__text">${label}</div>
         ${trailingIconPart}
       </div>`;
   }
-  firstUpdated(){
-    //this._formElement = this.shadowRoot!.querySelector(FormElement.formElementSelector);
-    this._componentRoot = this.shadowRoot!.querySelector(Chip.componentSelector);
-    this._component = new (Chip.ComponentClass)(this._componentRoot);   
-  }
+
   // TODO(sorvell): Prefer being able to set a property for active rather than
   // having a method. This enables declarative setting.
   // toggleActive() {
@@ -87,7 +79,7 @@ export class Chip extends LitElement {
 
   _interactionHandler() {
     requestAnimationFrame(() => {
-      this.active = this._componentRoot!.classList.contains('mdc-chip--activated');
+      this.active = this._componentRoot.classList.contains('mdc-chip--activated');
     });
   }
 }
