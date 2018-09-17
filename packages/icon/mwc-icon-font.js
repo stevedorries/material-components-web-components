@@ -14,9 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 // load material icons font
-const fontEl = document.createElement('link');
-fontEl.rel = 'stylesheet';
-fontEl.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-document.head.appendChild(fontEl);
+let count = document.querySelectorAll("#materialIconsFont").length;
+if (count == 0) {
+    const fontEl = document.createElement('link');
+    fontEl.rel = 'stylesheet';
+    fontEl.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+    fontEl.id = "materialIconsFont";
+    document.head.appendChild(fontEl);
+}
+//# sourceMappingURL=mwc-icon-font.js.map

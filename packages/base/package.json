@@ -1,9 +1,10 @@
 {
   "name": "@material/mwc-base",
-  "version": "0.2.0",
-  "description": "",
+  "version": "0.1.2",
+  "description": "A suite of shared libraries and utility functions for Material Components Web Components",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -11,7 +12,10 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@polymer/lit-element": "^0.6.0"
+    "@polymer/lit-element": "^0.6.0-dev.6"
+  },
+  "devDependencies": {
+    "typescript": "^3.0.1"
   },
   "publishConfig": {
     "access": "public"

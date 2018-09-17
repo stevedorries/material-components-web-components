@@ -31,16 +31,28 @@ limitations under the License.
   </header>
 
   <main>
+    <form>
     <mwc-radio id="s.1" name="s"></mwc-radio>
     <mwc-radio id="s.2" name="s" checked></mwc-radio>
     <mwc-radio id="s.3" name="s"></mwc-radio>
     <br>
+    <input id="cs.1" type="checkbox" onclick="() => { let s1 = document.getElementById('s.1'); s1.checked = this.checked }" />
+    <input id="cs.2" type="checkbox" onclick="() => { let s2 = document.getElementById('s.2'); s2.checked = this.checked }" />
+    <input id="cs.3" type="checkbox" onclick="() => { let s3 = document.getElementById('s.3'); s3.checked = this.checked }" />
+    <br>
     <mwc-radio id="b.1" name="b"></mwc-radio>
     <mwc-radio id="b.2" name="b"></mwc-radio>
-    <mwc-radio id="b.3" name="b" checked></mwc-radio>
+    <mwc-radio id="b.3" name="b"></mwc-radio>
+  </form>
   </main>
   <script>
     addEventListener('load', () => document.body.classList.remove('unresolved'));
+    let cs1 = document.getElementById('cs.1');
+    let cs2 = document.getElementById('cs.2');
+    let cs3 = document.getElementById('cs.3');
+    cs1.addEventListener('click', () => { let s1 = document.getElementById('s.1'); s1.checked = cs1.checked });
+    cs2.addEventListener('click', () => { let s2 = document.getElementById('s.2'); s2.checked = cs2.checked });
+    cs3.addEventListener('click', () => { let s3 = document.getElementById('s.3'); s3.checked = cs3.checked });
   </script>
 </body>
 </html>

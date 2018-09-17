@@ -1,8 +1,8 @@
 {
   "name": "@material/mwc-chips",
-  "version": "0.2.0",
+  "version": "0.1.2",
   "description": "",
-  "main": "mwc-chip.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,11 +10,12 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@material/chips": "^0.35.0",
-    "@material/mwc-base": "^0.2.0",
-    "@material/mwc-icon": "^0.2.0",
-    "@polymer/lit-element": "^0.6.0"
+    "@material/mwc-base": "^0.1.2",
+    "@material/mwc-icon": "^0.1.2",
+    "@polymer/lit-element": "^0.6.0-dev.6"
   },
   "devDependencies": {
+    "typescript": "latest",    
     "@material/mwc-sass-render": "^0.1.2"
   },
   "publishConfig": {

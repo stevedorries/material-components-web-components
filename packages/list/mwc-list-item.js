@@ -14,23 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
+import {LitElement, html, classString as c$, renderAttributes} from '@polymer/lit-element/lit-element.js';
 import {style} from './mwc-list-item-css.js';
 import '@material/mwc-icon/mwc-icon-font.js';
-
-function renderAttributes(element, attrInfo) {
-  for (const a in attrInfo) {
-    const v = attrInfo[a] === true ? '' : attrInfo[a];
-    if (v || v === '' || v === 0) {
-        if (element.getAttribute(a) !== v) {
-            element.setAttribute(a, String(v));
-        }
-    }
-    else if (element.hasAttribute(a)) {
-        element.removeAttribute(a);
-    }
-  }
-}
 
 export class ListItem extends LitElement {
   static get properties() {
@@ -56,7 +42,7 @@ export class ListItem extends LitElement {
   render() {
     const {label, icon, disabled} = this;
     // TODO(sorvell): needs replacement
-    renderAttributes(this, {'aria-disabled': disabled ? 'true' : null});
+    //renderAttributes(this, {'aria-disabled': disabled ? 'true' : null});
     return html`
       ${this.renderStyle()}
       <div class="mdc-list-item" role="menuitem" tabindex="0" aria-disabled="${disabled}">
@@ -66,7 +52,7 @@ export class ListItem extends LitElement {
       </div>`;
   }
 
-  firstUpdated() {
+  firstRendered() {
     this._listItem = this.shadowRoot.querySelector('.mdc-list-item');
   }
 

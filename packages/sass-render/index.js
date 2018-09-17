@@ -45,7 +45,7 @@ async function sassToCss(sassFile) {
     file: sassFile,
     importer: (url) => {
       if (url.indexOf('@material') === 0) {
-        return {file: resolveNpmPath(url)};
+        return { file: resolveNpmPath(url) };
       } else {
         return null;
       }

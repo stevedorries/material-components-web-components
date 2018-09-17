@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {html} from '@polymer/lit-element/lit-element.js';
-
-export const style = html`<style></style>`;
+import { html } from '@polymer/lit-element';
+export const style = html `<style>
+</style>`;
+//# sourceMappingURL=mwc-icon-css.js.map
