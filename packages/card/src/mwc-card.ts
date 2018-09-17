@@ -42,5 +42,42 @@ export class Card extends LitElement {
       </div>`;
   }
 }
+export class MwcCard extends LitElement {
+  stroke: boolean;
+  static get properties() {
+    return {
+      stroke: { type: Boolean },
+    };
+  }
+
+  constructor() {
+    super();
+    this.stroke = false;
+  }
+
+  renderStyle() {
+    return style;
+  }
+
+  render() {
+    const { stroke } = this;
+    return html`
+      ${ this.renderStyle()}      
+      <div class$="mdc-card ${stroke ? 'mdc-card--stroked' : ''}">
+        <div class="mdc-card__media mdc-card__media--square">
+          <div class="mdc-card__media-content"><slot name="title">Title</slot></div>
+        </div>
+        <slot name="content"></slot>
+        <div class="mdc-card__actions">
+          <div class="mdc-card__action-buttons">
+          <slot name="actionButtons"></slot>
+          </div>
+          <div class="mdc-card__action-icons">
+          <slot name="actionIcons"></slot>
+          </div>
+        </div>
+      </div>`;
+  }
+}
 
 customElements.define('mwc-card', Card);

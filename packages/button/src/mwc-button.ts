@@ -32,9 +32,11 @@ export class Button extends LitElement implements RippleCapableComponent {
   label: string;
   private _ripple?: MDCRipple | null = null;
   _root: HTMLElement | null = null;
+  action: boolean;
 
   static get properties() {
     return {
+      action: { type: Boolean },
       raised: { type: Boolean },
       unelevated: { type: Boolean },
       unbounded: { type: Boolean },
@@ -48,6 +50,7 @@ export class Button extends LitElement implements RippleCapableComponent {
 
   constructor() {
     super();
+    this.action = false;
     this.raised = false;
     this.unelevated = false;
     this.outlined = false;
@@ -80,18 +83,21 @@ export class Button extends LitElement implements RippleCapableComponent {
   }
 
   render() {
-    const { raised, unelevated, outlined, dense, disabled, icon, label } = this;
+    const { action, raised, unelevated, outlined, dense, disabled, icon, label } = this;
     const hostClasses = classString({
       'mdc-button--raised': raised,
       'mdc-button--unelevated': unelevated,
       'mdc-button--outlined': outlined,
       'mdc-button--dense': dense,
+      'mdc-card__action': action,
+      'mdc-card__action--button': (action && !icon),
+      'mdc-card__action--icon': (action && icon)
     });
     return html`
-      ${this.renderStyle()}
-      <button class="mdc-button ${hostClasses}" ?disabled="${disabled}">
-        ${icon ? html`<span class="material-icons mdc-button__icon">${icon}</span>` : ''}
-        ${label || ''}
+       ${this.renderStyle()}
+      <button class="mdc-button ${hostClasses}" ?disabled="${disabled}" title="${label || ''}">
+        ${icon ? html`
+        <span class="material-icons mdc-button__icon">${icon}</span>` : ''} ${label || ''}
         <slot></slot>
       </button>`;
   }
